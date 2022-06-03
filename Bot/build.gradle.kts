@@ -9,6 +9,7 @@ version = "1.0"
 repositories {
     mavenCentral()
     maven("https://jitpack.io/")
+    maven("https://m2.dv8tion.net/releases")
 }
 
 dependencies {
@@ -16,5 +17,5 @@ dependencies {
     implementation("net.dv8tion:JDA:5.0.0-alpha.11")
     implementation("com.github.minndevelopment:jda-ktx:45f2776")
     implementation("io.insert-koin:koin-core:3.2.0")
-    implementation("org.koin:koin-java:3.2.0")
+    implementation("com.sedmelluq:lavaplayer:1.3.78")
 }

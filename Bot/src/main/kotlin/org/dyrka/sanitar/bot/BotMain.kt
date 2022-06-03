@@ -1,13 +1,15 @@
 package org.dyrka.sanitar.bot
 
 import dev.minn.jda.ktx.events.CoroutineEventManager
+import kotlinx.coroutines.delay
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
+import net.dv8tion.jda.api.utils.cache.CacheFlag
+import org.dyrka.sanitar.bot.music.registerMusicCommands
 import org.koin.core.context.loadKoinModules
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import java.util.*
 import javax.security.auth.login.LoginException
 
 class BotMain {
@@ -20,11 +22,13 @@ class BotMain {
             intents.add(intent)
         }
 
-        val jda: JDA = JDABuilder.createDefault(
-            token
+        val jda: JDA = JDABuilder.create(
+            token,
+            intents
         ).apply {
-            enableIntents(intents)
             setEventManager(CoroutineEventManager())
+
+            setActivity(Activity.watching("на Дурку"))
         }.build()
 
         val jdaModule = module {
@@ -33,11 +37,17 @@ class BotMain {
 
         loadKoinModules(jdaModule)
 
+        delay(5000L)
+
         botInit(jda)
     }
 
-    suspend fun botInit(jda: JDA) {
+    private suspend fun botInit(jda: JDA) {
+        registerCommands()
+    }
 
+    private suspend fun registerCommands() {
+        registerMusicCommands()
     }
 
 }
