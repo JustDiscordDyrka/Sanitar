@@ -28,6 +28,7 @@ fun registerMusicCommands() {
         slash("volume", "Эта команда изменяет громкость трека") {
             option<Int>("volume", "Громкость трека", true)
         }
+        slash("pause", "Эта команда приостанавливает трек")
 
     }.queue()
 
@@ -40,5 +41,6 @@ fun registerMusicCommands() {
     skipCommandHandler()
     stopCommandHandler()
     volumeCommandHandler()
+    pauseCommandHandler()
 
 }

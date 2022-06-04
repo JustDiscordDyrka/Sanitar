@@ -9,11 +9,11 @@ import org.dyrka.sanitar.bot.music.lavaplayer.GuildMusicManager
 import org.dyrka.sanitar.bot.music.lavaplayer.PlayerManager
 import org.koin.core.context.GlobalContext
 
-fun stopCommandHandler() {
+fun pauseCommandHandler() {
 
     val jda = GlobalContext.get().get<JDA>()
 
-    jda.onCommand("stop") { event ->
+    jda.onCommand("pause") { event ->
         val channel: TextChannel = event.textChannel
         val self: Member = event.guild!!.selfMember
         val selfVoiceState: GuildVoiceState? = self.voiceState
@@ -40,10 +40,9 @@ fun stopCommandHandler() {
 
         val musicManager: GuildMusicManager = PlayerManager.instance!!.getMusicManager(event.guild!!)
 
-        musicManager.scheduler.player.stopTrack()
-        musicManager.scheduler.queue.clear()
+        musicManager.scheduler.player.isPaused = !musicManager.scheduler.player.isPaused
 
-        event.interaction.hook.sendMessage(":white_check_mark: Музыка остановлена, а также очищена очередь.").queue()
+        event.interaction.hook.sendMessage(":white_check_mark: Музыка ${if (musicManager.scheduler.player.isPaused) "приостановлена" else "возобновлена"}").queue()
     }
 
 }
