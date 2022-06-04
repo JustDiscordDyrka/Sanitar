@@ -20,8 +20,10 @@ fun volumeCommandHandler() {
         val self: Member = event.guild!!.selfMember
         val selfVoiceState: GuildVoiceState? = self.voiceState
 
+        event.deferReply().queue()
+
         if (!selfVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Я не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Я не в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -29,17 +31,17 @@ fun volumeCommandHandler() {
         val memberVoiceState: GuildVoiceState? = member.voiceState
 
         if (!memberVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Ты не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в голосовом канале!").queue()
             return@onCommand
         }
 
         if (memberVoiceState.channel!! != selfVoiceState.channel) {
-            event.reply(":x: Ты не в том же голосовом канале, что и бот!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в том же голосовом канале, что и бот!").queue()
             return@onCommand
         }
 
         if (event.options.isEmpty()) {
-            event.reply(":x: Ты не указал громкость!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не указал громкость!").queue()
             return@onCommand
         }
 
@@ -47,14 +49,14 @@ fun volumeCommandHandler() {
         val audioPlayer: AudioPlayer = musicManager.audioPlayer
 
         if (audioPlayer.playingTrack == null) {
-            event.reply(":x: Сейчас ничего не играет!").queue()
+            event.interaction.hook.sendMessage(":x: Сейчас ничего не играет!").queue()
             return@onCommand
         }
 
         val volumeToSet = event.getOption("volume")!!.asInt
 
         audioPlayer.volume = volumeToSet
-        event.reply(":white_check_mark: Установлена громкость на: $volumeToSet").queue()
+        event.interaction.hook.sendMessage(":white_check_mark: Установлена громкость на: $volumeToSet").queue()
     }
 
 }

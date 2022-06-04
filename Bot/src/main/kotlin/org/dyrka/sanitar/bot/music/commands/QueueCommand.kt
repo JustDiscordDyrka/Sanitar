@@ -3,8 +3,10 @@ package org.dyrka.sanitar.bot.music.commands
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import dev.minn.jda.ktx.events.onCommand
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.requests.restaction.MessageAction
+import net.dv8tion.jda.api.requests.restaction.WebhookMessageAction
 import org.dyrka.sanitar.bot.music.lavaplayer.GuildMusicManager
 import org.dyrka.sanitar.bot.music.lavaplayer.PlayerManager
 import org.koin.core.context.GlobalContext
@@ -21,40 +23,34 @@ fun queueCommandHandler() {
         val musicManager: GuildMusicManager = PlayerManager.instance!!.getMusicManager(event.guild!!)
         val queue: BlockingQueue<AudioTrack?> = musicManager.scheduler.queue
 
+        event.deferReply().queue()
+
         if (queue.isEmpty()) {
-            event.reply(":x: Очередь пуста!").queue()
+            event.interaction.hook.sendMessage(":x: Очередь пуста!").queue()
             return@onCommand
         }
 
-        event.reply("Смотрю очередь...").queue()
 
         val trackCount = queue.size.coerceAtMost(20)
         val trackList: ArrayList<AudioTrack?> = ArrayList(queue)
 
-        val messageAction: MessageAction = channel.sendMessage(":white_check_mark: Очередь:\n")
+        val answer = buildString {
+            append(":white_check_mark: Очередь:\n")
 
-        for (i in 0 until trackCount) {
-            val track = trackList[i]
-            val info = track!!.info
-            messageAction.append('#')
-                .append((i + 1).toString())
-                .append(" `")
-                .append(info.title)
-                .append(" by ")
-                .append(info.author)
-                .append("` [`")
-                .append(formatTime(track.duration))
-                .append("`]\n")
+            for (i in 0 until trackCount) {
+                val track = trackList[i]
+                val info = track!!.info
+
+                append("#${i + 1} `${info.title}` by `${info.author}` `[${formatTime(track.duration)}]`\n")
+            }
+
+
+            if (trackList.size > trackCount) {
+                append("А также `${trackList.size - trackCount}` других треков!")
+            }
         }
 
-
-        if (trackList.size > trackCount) {
-            messageAction.append("А также `")
-                .append((trackList.size - trackCount).toString())
-                .append("` других треков!")
-        }
-
-        messageAction.queue()
+        event.interaction.hook.sendMessage(answer).queue()
     }
 
 }

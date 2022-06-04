@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.cache.CacheFlag
+import org.dyrka.sanitar.bot.level.levelStuff
 import org.dyrka.sanitar.bot.music.registerMusicCommands
+import org.dyrka.sanitar.database.DataBaseAPI
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import javax.security.auth.login.LoginException
@@ -43,6 +45,11 @@ class BotMain {
     }
 
     private suspend fun botInit(jda: JDA) {
+        DataBaseAPI.instance!!.startup.startup()
+
+        val dyrka = jda.getGuildById("621722954002333696")
+        levelStuff(dyrka!!)
+
         registerCommands()
     }
 

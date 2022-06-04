@@ -18,8 +18,10 @@ fun joinCommandHandler() {
         val self: Member = event.guild!!.selfMember
         val selfVoiceState: GuildVoiceState? = self.voiceState
 
+        event.deferReply().queue()
+
         if (selfVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Я уже в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Я уже в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -27,7 +29,7 @@ fun joinCommandHandler() {
         val memberVoiceState: GuildVoiceState? = member!!.voiceState
 
         if (!memberVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Ты не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -35,7 +37,7 @@ fun joinCommandHandler() {
         val memberChannel: VoiceChannel = memberVoiceState.channel as VoiceChannel
 
         audioManager.openAudioConnection(memberChannel)
-        event.reply(":white_check_mark: Присоединяюсь к " + memberChannel.name).queue()
+        event.interaction.hook.sendMessage(":white_check_mark: Присоединяюсь к " + memberChannel.name).queue()
     }
 
 }

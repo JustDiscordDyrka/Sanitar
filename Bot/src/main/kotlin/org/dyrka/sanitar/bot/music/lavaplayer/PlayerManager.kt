@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.TextChannel
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent
 
 class PlayerManager {
     private val musicManagers: MutableMap<Long, GuildMusicManager>
@@ -29,11 +30,11 @@ class PlayerManager {
         }
     }
 
-    fun loadAndPlay(channel: TextChannel, trackUrl: String?) {
+    fun loadAndPlay(event: GenericCommandInteractionEvent, channel: TextChannel, trackUrl: String?) {
         val musicManager = getMusicManager(channel.guild)
         audioPlayerManager.loadItemOrdered(musicManager, trackUrl, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
-                channel.sendMessage(
+                event.interaction.hook.sendMessage(
                     """
     :white_check_mark: Добавляю в очередь: `${track.info.title}`
     :bust_in_silhouette: Автор: `${track.info.author}`
@@ -45,7 +46,7 @@ class PlayerManager {
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 if (!playlist.isSearchResult) {
                     val tracks = playlist.tracks
-                    channel.sendMessage(
+                    event.interaction.hook.sendMessage(
                         """:white_check_mark: Добавляю в очередь: `${tracks.size} треков из плейлиста`
 :film_frames: Плейлист: `${playlist.name}`"""
                     ).queue()
@@ -56,7 +57,7 @@ class PlayerManager {
                 }
                 val track = playlist.tracks[0]
                 musicManager.scheduler.queue(track)
-                channel.sendMessage(
+                event.interaction.hook.sendMessage(
                     """
     :white_check_mark: Добавляю в очередь: `${track.info.title}`
     :bust_in_silhouette: Автор: `${track.info.author}`
@@ -65,11 +66,11 @@ class PlayerManager {
             }
 
             override fun noMatches() {
-                channel.sendMessage(":x: Я ничего не нашёл!").queue()
+                event.interaction.hook.sendMessage(":x: Я ничего не нашёл!").queue()
             }
 
             override fun loadFailed(exception: FriendlyException) {
-                channel.sendMessage(":x: Я не смог загрузить трек!").queue()
+                event.interaction.hook.sendMessage(":x: Я не смог загрузить трек!").queue()
             }
         })
     }

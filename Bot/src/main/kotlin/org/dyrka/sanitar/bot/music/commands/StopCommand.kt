@@ -18,8 +18,10 @@ fun stopCommandHandler() {
         val self: Member = event.guild!!.selfMember
         val selfVoiceState: GuildVoiceState? = self.voiceState
 
+        event.deferReply().queue()
+
         if (!selfVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Я не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Я не в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -27,12 +29,12 @@ fun stopCommandHandler() {
         val memberVoiceState: GuildVoiceState? = member.voiceState
 
         if (!memberVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Ты не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в голосовом канале!").queue()
             return@onCommand
         }
 
         if (memberVoiceState.channel!! != selfVoiceState!!.channel) {
-            event.reply(":x: Ты не в том же голосовом канале, что и бот!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в том же голосовом канале, что и бот!").queue()
             return@onCommand
         }
 
@@ -41,7 +43,7 @@ fun stopCommandHandler() {
         musicManager.scheduler.player.stopTrack()
         musicManager.scheduler.queue.clear()
 
-        event.reply(":white_check_mark: Музыка остановлена, а также очищена очередь.").queue()
+        event.interaction.hook.sendMessage(":white_check_mark: Музыка остановлена, а также очищена очередь.").queue()
     }
 
 }

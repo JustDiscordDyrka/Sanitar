@@ -18,8 +18,10 @@ fun repeatCommandHandler() {
         val self: Member = event.guild!!.selfMember
         val selfVoiceState: GuildVoiceState? = self.voiceState
 
+        event.deferReply().queue()
+
         if (!selfVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Я не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Я не в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -27,12 +29,12 @@ fun repeatCommandHandler() {
         val memberVoiceState: GuildVoiceState? = member.voiceState
 
         if (!memberVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Ты не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в голосовом канале!").queue()
             return@onCommand
         }
 
         if (memberVoiceState.channel!! != selfVoiceState.channel) {
-            event.reply(":x: Ты не в том же голосовом канале, что и бот!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в том же голосовом канале, что и бот!").queue()
             return@onCommand
         }
 
@@ -42,7 +44,7 @@ fun repeatCommandHandler() {
 
         musicManager.scheduler.repeating = newRepeating
 
-        event.reply(":cyclone: Установлен режим: `" + (if (newRepeating) "повторение" else "обычный") + "`")
+        event.interaction.hook.sendMessage(":cyclone: Установлен режим: `" + (if (newRepeating) "повторение" else "обычный") + "`")
             .queue()
     }
 

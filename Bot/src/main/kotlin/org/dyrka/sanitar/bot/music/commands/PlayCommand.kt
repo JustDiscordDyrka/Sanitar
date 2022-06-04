@@ -15,8 +15,10 @@ fun playCommandHandler() {
     jda.onCommand("play") { event ->
         val channel = event.textChannel
 
+        event.deferReply().queue()
+
         if (event.options.isEmpty()) {
-            event.reply(":x: Ты не указал ссылку на музыку или файл!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не указал ссылку на музыку или файл!").queue()
             return@onCommand
         }
 
@@ -24,7 +26,7 @@ fun playCommandHandler() {
         val selfVoiceState = self.voiceState
 
         if (!selfVoiceState!!.inAudioChannel()) {
-            event.reply(" :x: Я не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(" :x: Я не в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -32,21 +34,20 @@ fun playCommandHandler() {
         val memberVoiceState = member.voiceState
 
         if (!memberVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Ты не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в голосовом канале!").queue()
             return@onCommand
         }
 
         if (memberVoiceState.channel != selfVoiceState.channel) {
-            event.reply(":x: Ты не в том же голосовом канале, что и я!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в том же голосовом канале, что и я!").queue()
             return@onCommand
         }
 
-        event.reply(":white_check_mark: Ищу трек...").queue()
         var link: String = event.getOption("track")!!.asString
         if (!isUrl(link)) {
             link = "ytsearch:$link"
         }
-        PlayerManager.instance!!.loadAndPlay(channel, link)
+        PlayerManager.instance!!.loadAndPlay(event, channel, link)
     }
 
 }

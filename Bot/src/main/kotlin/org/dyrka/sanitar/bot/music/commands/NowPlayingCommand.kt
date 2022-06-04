@@ -20,8 +20,10 @@ fun nowPlayingCommandHandler() {
         val self: Member = event.guild!!.selfMember
         val selfVoiceState: GuildVoiceState? = self.voiceState
 
+        event.deferReply().queue()
+
         if (!selfVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Я не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Я не в голосовом канале!").queue()
             return@onCommand
         }
 
@@ -29,12 +31,12 @@ fun nowPlayingCommandHandler() {
         val memberVoiceState: GuildVoiceState? = member.voiceState
 
         if (!memberVoiceState!!.inAudioChannel()) {
-            event.reply(":x: Ты не в голосовом канале!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в голосовом канале!").queue()
             return@onCommand
         }
 
         if (memberVoiceState.channel != selfVoiceState.channel) {
-            event.reply(":x: Ты не в том же голосовом канале, что и я!").queue()
+            event.interaction.hook.sendMessage(":x: Ты не в том же голосовом канале, что и я!").queue()
             return@onCommand
         }
 
@@ -43,13 +45,13 @@ fun nowPlayingCommandHandler() {
         val track = audioPlayer.playingTrack
 
         if (track == null) {
-            event.reply(":x: Сейчас ничего не играет!").queue()
+            event.interaction.hook.sendMessage(":x: Сейчас ничего не играет!").queue()
             return@onCommand
         }
 
         val info = track.info
 
-        event.reply(
+        event.interaction.hook.sendMessage(
             """
                 :musical_note: Сейчас играет: `${info.title}`
                 :bust_in_silhouette: Автор: `${info.author}`

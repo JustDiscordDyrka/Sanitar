@@ -18,4 +18,8 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-kotlin:6.3.1")
     implementation("io.insert-koin:koin-core:3.2.0")
     implementation(project(":Bot"))
+    implementation("org.jetbrains.exposed", "exposed-core", "0.38.2")
+    implementation("org.jetbrains.exposed", "exposed-dao", "0.38.2")
+    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.38.2")
+    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 }
