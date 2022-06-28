@@ -28,4 +28,5 @@ dependencies {
     implementation(project(":DataBaseAPI"))
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
     implementation("io.github.astonbitecode:j4rs:0.13.0")
+    implementation("com.google.guava:guava:31.1-jre")
 }

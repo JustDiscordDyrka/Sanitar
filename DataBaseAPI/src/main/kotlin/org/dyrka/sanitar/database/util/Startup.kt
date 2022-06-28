@@ -11,7 +11,7 @@ class Startup {
     }
 
     init {
-        System.load("${System.getProperty("user.dir")}/database_rs/target/release/libSanitar${if (System.getProperty("os.name") == "Windows") ".dll" else ".so"}");
+        System.load("${System.getProperty("user.dir")}/libdatabase_rs${if (System.getProperty("os.name") == "Windows") ".dll" else ".so"}")
     }
 
     private external fun createLevelDatabase()
