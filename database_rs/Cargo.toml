@@ -1,0 +1,12 @@
+[package]
+name = "Sanitar"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+j4rs = "0.13.0"
+j4rs_derive = "0.1.0"
+redis = "0.21.5"

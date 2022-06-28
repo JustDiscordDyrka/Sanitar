@@ -1,35 +1,26 @@
 package org.dyrka.sanitar.database.level
 
-import org.dyrka.sanitar.database.level.`object`.Levels
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
+import org.astonbitecode.j4rs.api.Instance
+import org.astonbitecode.j4rs.api.java2rust.Java2RustUtils
 
 class LevelDataBase {
 
     fun setDefaultLevelIfNotExists(memberId: Long) {
-        transaction {
-            val newMemberLevel = Levels.select { Levels.id eq memberId }.firstOrNull()
-
-            if (newMemberLevel == null) {
-                Levels.insert {
-                    it[id] = memberId
-                    it[level] = 0
-                }
-            }
-
-            commit()
+        if (getLevel(memberId) == -5L) {
+            setLevel(memberId, 0L)
         }
     }
 
-    fun getLevel(id: Long) = transaction { Levels.select { Levels.id eq id }.first()[Levels.level] }
-
-    fun setLevel(id: Long, level: Long) = transaction {
-        Levels.update( { Levels.id eq id } ) {
-            it[Levels.level] = level
-        }
-        commit()
+    init {
+        System.load("${System.getProperty("user.dir")}/database_rs/target/release/libSanitar${if (System.getProperty("os.name") == "Windows") ".dll" else ".so"}");
     }
+
+    fun getLevel(id: Long): Long = Java2RustUtils.getObjectCasted<Long>(getLevelRs(Java2RustUtils.createInstance(id)))
+
+    fun setLevel(id: Long, level: Long) = setLevelRs(Java2RustUtils.createInstance<Long>(id), Java2RustUtils.createInstance<Long>(level))
+
+    private external fun getLevelRs(id: Instance<Long>): Instance<Long>
+
+    private external fun setLevelRs(id: Instance<Long>, level: Instance<Long>)
 
 }
