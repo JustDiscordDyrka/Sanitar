@@ -40,8 +40,8 @@ tasks.register("buildRelease") {
 
     println(String(byteOut.toByteArray()).trim())
 
-    dependsOn(tasks.withType<ShadowJar>())
     dependsOn(tasks.named("copyNatives"))
+    dependsOn(tasks.withType<ShadowJar>())
 }
 
 tasks.register<Copy>("copyNatives") {

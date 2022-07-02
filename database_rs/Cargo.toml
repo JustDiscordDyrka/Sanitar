@@ -10,3 +10,4 @@ crate-type = ["cdylib"]
 j4rs = "0.13.0"
 j4rs_derive = "0.1.0"
 redis = "0.21.5"
+google-sheets4 = "3.1.0+20220221"

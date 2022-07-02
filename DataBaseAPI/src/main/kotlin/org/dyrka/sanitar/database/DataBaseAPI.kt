@@ -1,7 +1,6 @@
 package org.dyrka.sanitar.database
 
 import org.dyrka.sanitar.database.level.LevelDataBase
-import org.dyrka.sanitar.database.util.Startup
 
 class DataBaseAPI {
 
@@ -17,8 +16,6 @@ class DataBaseAPI {
         }
 
     }
-
-    val startup = Startup()
 
     val levels = LevelDataBase()
 
