@@ -11,8 +11,7 @@ fun registerMusicCommands() {
 
     val jda = GlobalContext.get().get<JDA>()
 
-    //val dyrka = jda.getGuildById("621722954002333696")
-    val dyrka = jda.getGuildById("979023634284810260")
+    val dyrka = jda.getGuildById("621722954002333696")
 
     dyrka!!.updateCommands {
 
