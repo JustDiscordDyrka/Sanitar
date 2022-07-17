@@ -37,6 +37,7 @@ fun reportCommandHandler() {
                 Embed {
                     title = "Жалоба на юзера!"
                     description = """
+                        Жалоба от: ${event.user.name}#${event.user.discriminator}
                         Жалоба на: ${username!!.asString}
                         Жалоба: ${reportText!!.asString}
                     """.trimIndent()
