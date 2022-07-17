@@ -1,14 +1,37 @@
-package org.dyrka.sanitar.bot.music
+package org.dyrka.sanitar.bot
 
 import dev.minn.jda.ktx.interactions.commands.option
 import dev.minn.jda.ktx.interactions.commands.slash
 import dev.minn.jda.ktx.interactions.commands.updateCommands
 import net.dv8tion.jda.api.JDA
 import org.dyrka.sanitar.bot.music.commands.*
+import org.dyrka.sanitar.bot.report.reportCommandHandler
 import org.koin.core.context.GlobalContext
 
-fun registerMusicCommands() {
+fun registerBotCommands() {
+    registerCommands()
+    registerMusicCommands()
+    registerReportCommands()
+}
 
+fun registerMusicCommands() {
+    joinCommandHandler()
+    leaveCommandHandler()
+    playCommandHandler()
+    queueCommandHandler()
+    nowPlayingCommandHandler()
+    repeatCommandHandler()
+    skipCommandHandler()
+    stopCommandHandler()
+    volumeCommandHandler()
+    pauseCommandHandler()
+}
+
+fun registerReportCommands() {
+    reportCommandHandler()
+}
+
+fun registerCommands() {
     val jda = GlobalContext.get().get<JDA>()
 
     val dyrka = jda.getGuildById("621722954002333696")
@@ -30,17 +53,7 @@ fun registerMusicCommands() {
         }
         slash("pause", "Эта команда приостанавливает трек")
 
+        slash("report", "При помощи этой команды можно кинуть жалобу на другого участника")
+
     }.queue()
-
-    joinCommandHandler()
-    leaveCommandHandler()
-    playCommandHandler()
-    queueCommandHandler()
-    nowPlayingCommandHandler()
-    repeatCommandHandler()
-    skipCommandHandler()
-    stopCommandHandler()
-    volumeCommandHandler()
-    pauseCommandHandler()
-
 }

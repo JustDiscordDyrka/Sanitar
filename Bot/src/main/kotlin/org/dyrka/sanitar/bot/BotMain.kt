@@ -10,9 +10,6 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
 import org.dyrka.sanitar.bot.level.levelStuff
-import org.dyrka.sanitar.bot.levels.Levels
-import org.dyrka.sanitar.bot.music.registerMusicCommands
-import org.dyrka.sanitar.database.DataBaseAPI
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 import java.io.FileOutputStream
@@ -66,7 +63,7 @@ class BotMain {
         registerCommands()
     }
 
-    private suspend fun registerCommands() {
-        registerMusicCommands()
+    private fun registerCommands() {
+        registerBotCommands()
     }
 }
