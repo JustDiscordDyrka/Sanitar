@@ -1,10 +1,7 @@
 package org.dyrka.sanitar.bot
 
-import com.google.common.io.Resources
 import dev.minn.jda.ktx.events.CoroutineEventManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
@@ -12,7 +9,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import org.dyrka.sanitar.bot.level.levelStuff
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
-import java.io.FileOutputStream
+import java.io.File
 import javax.security.auth.login.LoginException
 
 class BotMain {
@@ -34,6 +31,12 @@ class BotMain {
             setActivity(Activity.watching("на Дурку"))
         }.build()
 
+        val dataFolder = File("./data/")
+
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs()
+        }
+
         val jdaModule = module {
             single { jda }
         }
@@ -46,17 +49,6 @@ class BotMain {
     }
 
     private suspend fun botInit(jda: JDA) {
-        val url = javaClass.classLoader.getResource("libdatabase_rs${if (System.getProperty("os.name") == "Windows") ".dll" else ".so"}")
-
-        if (url != null) {
-            withContext(Dispatchers.IO) {
-                Resources.copy(
-                    url,
-                    FileOutputStream("${System.getProperty("user.dir")}/libdatabase_rs${if (System.getProperty("os.name") == "Windows") ".dll" else ".so"}")
-                )
-            }
-        }
-
         val dyrka = jda.getGuildById("621722954002333696")
         levelStuff(dyrka!!)
 

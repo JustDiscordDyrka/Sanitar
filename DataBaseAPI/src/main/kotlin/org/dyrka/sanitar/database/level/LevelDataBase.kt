@@ -1,9 +1,11 @@
 package org.dyrka.sanitar.database.level
 
-import org.astonbitecode.j4rs.api.Instance
-import org.astonbitecode.j4rs.api.java2rust.Java2RustUtils
+import org.dyrka.sanitar.database.DataFilesHolder
+import org.koin.core.component.KoinComponent
+import org.mapdb.DBMaker
+import org.mapdb.Serializer
 
-class LevelDataBase {
+class LevelDataBase : KoinComponent {
 
     fun setDefaultLevelIfNotExists(memberId: Long) {
         if (getLevel(memberId) == -5L) {
@@ -12,24 +14,57 @@ class LevelDataBase {
         }
     }
 
-    init {
-        System.load("${System.getProperty("user.dir")}/libdatabase_rs${if (System.getProperty("os.name") == "Windows") ".dll" else ".so"}")
+    fun getLevel(id: Long): Long {
+        val db = DataFilesHolder.instance!!.levelsDatabase
+
+        val levels = db.hashMap("levels", Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen();
+
+        val level = levels[id]
+
+        if (level != null) {
+            return level[0]
+        }
+
+        return -5L
     }
 
-    fun getLevel(id: Long): Long = Java2RustUtils.getObjectCasted<Long>(getLevelRs(Java2RustUtils.createInstance(id)))
+    fun setLevel(id: Long, level: Long) {
+        val db = DataFilesHolder.instance!!.levelsDatabase
 
-    fun setLevel(id: Long, level: Long) = setLevelRs(Java2RustUtils.createInstance<Long>(id), Java2RustUtils.createInstance<Long>(level))
+        val levels = db.hashMap("levels", Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen();
 
-    private external fun getLevelRs(id: Instance<Long>): Instance<Long>
+        if (getLevel(id) == -5L) {
+            levels[id] = longArrayOf(level, 0)
+        } else {
+            levels[id] = longArrayOf(level, getXp(id))
+        }
 
-    private external fun setLevelRs(id: Instance<Long>, level: Instance<Long>)
+    }
 
-    fun getXp(id: Long): Long = Java2RustUtils.getObjectCasted<Long>(getXpRs(Java2RustUtils.createInstance(id)))
+    fun getXp(id: Long): Long {
+        val db = DataFilesHolder.instance!!.levelsDatabase
 
-    fun setXp(id: Long, xp: Long) = setXpRs(Java2RustUtils.createInstance<Long>(id), Java2RustUtils.createInstance<Long>(xp))
+        val levels = db.hashMap("levels", Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen();
 
-    private external fun getXpRs(id: Instance<Long>): Instance<Long>
+        val level = levels[id]
 
-    private external fun setXpRs(id: Instance<Long>, xp: Instance<Long>)
+        if (level != null) {
+            return level[1]
+        }
+
+        return -5L
+    }
+
+    fun setXp(id: Long, xp: Long) {
+        val db = DataFilesHolder.instance!!.levelsDatabase
+
+        val levels = db.hashMap("levels", Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen();
+
+        if (getXp(id) == -5L) {
+            levels[id] = longArrayOf(0, xp)
+        } else {
+            levels[id] = longArrayOf(getLevel(id), xp)
+        }
+    }
 
 }

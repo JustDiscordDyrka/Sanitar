@@ -24,4 +24,5 @@ dependencies {
     implementation("com.sedmelluq:lavaplayer:1.3.78")
     implementation(project(":DataBaseAPI"))
     implementation("com.google.guava:guava:31.1-jre")
+    implementation("org.mapdb:mapdb:3.0.8")
 }
